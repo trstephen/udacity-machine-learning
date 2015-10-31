@@ -19,45 +19,39 @@ from sklearn.metrics import accuracy_score
 ### features_train and features_test are the features for the training
 ### and testing datasets, respectively
 ### labels_train and labels_test are the corresponding item labels
-features_train, features_test, labels_train, labels_test = preprocess()
-
+# features_train, features_test, labels_train, labels_test = preprocess()
 
 #########################################################
 ### your code goes here ###
 
 #########################################################
 
+
+print("Preprocessing...")
+features_train, features_test, labels_train, labels_test = preprocess()
+
 # Use smaller training set
-shrink_factor = 1
-print("Using {percent:0.2%} of training data\n").format(percent = 1.0 / shrink_factor)
+shrink_factor = 100
 features_train = features_train[:len(features_train)/shrink_factor] 
 labels_train = labels_train[:len(labels_train)/shrink_factor] 
 
-def SVCTimer(kernel, C):
-	print("Testing {0} with C = {1}").format(kernel, C)
+print("\nTesting kernels with {percent:0.2%} of training data\n").format(percent = 1.0 / shrink_factor)
+print("Kernel\t\tAccuracy\tTrain Time\tPred Time\n")
 
-	clf = SVC(kernel=kernel, C=C)
+kernels = ["linear", "poly", "rbf", "sigmoid"]
+
+for kernel in kernels:
+	clf = SVC( kernel=kernel )
 
 	t0 = time()
 	clf.fit(features_train, labels_train)
 	training_time = round(time() - t0, 3)
-	print("Training time: {time}s").format(time = training_time)
 
 	t0 = time()
 	predictions = clf.predict(features_test)
 	pred_time = round(time() - t0, 3)
-	print("Prediction time: {time}s").format(time = pred_time)
 
 	accuracy = accuracy_score(predictions, labels_test)
-	print("Accuracy: {acc}\n").format(acc=accuracy)
-
-	# predictions is a numpy.ndarray so .count() doesn't work
-	# Sara = 0; Chris = 1
-	emails = (predictions == 1).sum()
-	print("Chris emails: {emails}").format(emails = emails)
-
-
-C_vals = [10000]
-
-for C in C_vals:
-	SVCTimer(kernel="rbf", C=C)
+	
+	print("{kernel}\t\t{acc:0.4%}\t{train:.3f} s\t\t{pred:.3f} s").format(
+		kernel=kernel, acc=accuracy, train=training_time, pred=pred_time)
