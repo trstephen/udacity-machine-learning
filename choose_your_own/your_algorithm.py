@@ -3,9 +3,9 @@
 import matplotlib.pyplot as plt
 from prep_terrain_data import makeTerrainData
 from class_vis import prettyPicture
-
+print "training"
 features_train, labels_train, features_test, labels_test = makeTerrainData()
-
+print "done training"
 
 ### the training data (features_train, labels_train) have both "fast" and "slow"
 ### points mixed together--separate them so we can give them different colors
@@ -31,10 +31,16 @@ plt.show()
 ### your code here!  name your classifier object clf if you want the 
 ### visualization code (prettyPicture) to show you the decision boundary
 
+# AdaBoost! I choose you!
 
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
 
-
-
+clf = AdaBoostClassifier()
+clf.fit(features_train, labels_train)
+pred = clf.predict(features_test)
+print("Accuracy: {acc}").format(acc = accuracy_score(pred, labels_test) )
 
 
 
