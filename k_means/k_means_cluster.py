@@ -36,6 +36,17 @@ def Draw(pred, features, poi, mark_poi=False, name="image.png", f1_name="feature
     plt.savefig(name)
     plt.show()
 
+def FindMaxMinForFeature(data, feature):
+    """ finds max/min int values for a feature with "NaN" entries """
+
+    for person in data.keys():
+        if data[person][feature] == "NaN":
+            data.pop(person, 0)
+
+    max_person = max(data, key=lambda x: data[x][feature])
+    min_person = min(data, key=lambda x: data[x][feature])
+
+    return data[max_person][feature], data[min_person][feature]
 
 
 ### load in the dict of dicts containing all the data on each person in the dataset
@@ -48,8 +59,9 @@ data_dict.pop("TOTAL", 0)
 ### can be any key in the person-level dictionary (salary, director_fees, etc.) 
 feature_1 = "salary"
 feature_2 = "exercised_stock_options"
-poi  = "poi"
-features_list = [poi, feature_1, feature_2]
+feature_3 = "total_payments"
+poi = "poi"
+features_list = [poi, feature_1, feature_2, feature_3]
 data = featureFormat(data_dict, features_list )
 poi, finance_features = targetFeatureSplit( data )
 
@@ -58,14 +70,16 @@ poi, finance_features = targetFeatureSplit( data )
 ### you'll want to change this line to 
 ### for f1, f2, _ in finance_features:
 ### (as it's currently written, the line below assumes 2 features)
-for f1, f2 in finance_features:
+for f1, f2, f3 in finance_features:
     plt.scatter( f1, f2 )
 plt.show()
 
 ### cluster here; create predictions of the cluster labels
 ### for the data and store them to a list called pred
+from sklearn.cluster import KMeans
 
-
+clf = KMeans(n_clusters=3)
+pred = clf.fit_predict(finance_features)
 
 
 ### rename the "name" parameter when you change the number of features
@@ -74,3 +88,11 @@ try:
     Draw(pred, finance_features, poi, mark_poi=False, name="clusters.pdf", f1_name=feature_1, f2_name=feature_2)
 except NameError:
     print "no predictions object named pred found, no clusters to plot"
+
+max_options, min_options = FindMaxMinForFeature(data_dict, "exercised_stock_options")
+print("Max exercised stock options: {0}").format(max_options)
+print("Min exercised_stock_options: {0}").format(min_options)
+
+max_salary, min_salary = FindMaxMinForFeature(data_dict, "salary")
+print("Max salary: {0}").format(max_salary)
+print("Min salary: {0}").format(min_salary)
