@@ -96,3 +96,17 @@ print("Min exercised_stock_options: {0}").format(min_options)
 max_salary, min_salary = FindMaxMinForFeature(data_dict, "salary")
 print("Max salary: {0}").format(max_salary)
 print("Min salary: {0}").format(min_salary)
+
+### Feature scaling exercises
+from sklearn.preprocessing import MinMaxScaler
+import numpy as np
+
+options_salary_extrema = np.array([[float(max_options), float(max_salary)],
+                                   [float(min_options), float(min_salary)]])
+
+mms = MinMaxScaler()
+mms.fit(options_salary_extrema)
+
+prescaled = np.array([[1000000., 200000.]]) #opts, salary
+scaled = mms.transform(prescaled)
+print("Scaling for [[options, salary]]\nPre:\t{0}\nPost:\t{1}").format(prescaled, scaled)
