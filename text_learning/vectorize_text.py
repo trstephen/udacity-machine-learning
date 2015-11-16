@@ -29,6 +29,14 @@ from_chris = open("from_chris.txt", "r")
 from_data = []
 word_data = []
 
+stopwords = ("chris",
+             "cgermannsf",
+             "germani",
+             "sara", 
+             "shackleton", 
+             "sshacklensf"
+             )
+
 ### temp_counter is a way to speed up the development--there are
 ### thousands of emails from Sara and Chris, so running over all of them
 ### can take a long time
@@ -52,7 +60,7 @@ for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
 
             ### use str.replace() to remove any instances of the words
             ### ["sara", "shackleton", "chris", "germani"]
-            for stopword in ("sara", "shackleton", "chris", "germani"):
+            for stopword in stopwords:
                 words = words.replace(stopword, "")
 
             ### append the text to word_data

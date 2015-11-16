@@ -39,5 +39,25 @@ labels_train   = labels_train[:150]
 
 ### your code goes here
 
+# Part 1
+print("Number of features: {0}").format(len(features_train)) # 150
 
+# Part 2
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
 
+clf = DecisionTreeClassifier(min_samples_split = 40)
+clf.fit(features_train, labels_train)
+pred = clf.predict(features_test)
+
+print("Accuracy: {0}").format(accuracy_score(pred, labels_test)) # 0.947667804323
+
+# Part 3
+print("Printing features with importance >= 0.2")
+for i, score in numpy.ndenumerate(clf.feature_importances_):
+	if score >= 0.2:
+		print("\t{0}\t{1}\t{2}").format(
+			score, i[0], vectorizer.get_feature_names()[i[0]])
+
+# Part 4
+print("Problem word is: {0}").format(vectorizer.get_feature_names()[33614]) # sshacklensf
