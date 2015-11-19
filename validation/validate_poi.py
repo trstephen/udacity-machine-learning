@@ -14,6 +14,8 @@ import pickle
 import sys
 sys.path.append("../tools/")
 from feature_format import featureFormat, targetFeatureSplit
+from sklearn import cross_validation, tree
+from sklearn.metrics import accuracy_score
 
 data_dict = pickle.load(open("../final_project/final_project_dataset.pkl", "r") )
 
@@ -25,8 +27,15 @@ features_list = ["poi", "salary"]
 data = featureFormat(data_dict, features_list)
 labels, features = targetFeatureSplit(data)
 
+features_train, features_test, labels_train, labels_test = cross_validation.train_test_split(
+	features, labels, test_size=0.3, random_state=42)
 
+### it's all yours from here forward!
+# Lesson 13:
+#	Overfit score:		0.989473684211
+# 	30% split score:	0.724137931034
+clf = tree.DecisionTreeClassifier()
+clf.fit(features_train, labels_train)
+pred = clf.predict(features_test)
 
-### it's all yours from here forward!  
-
-
+print("Accuracy: {acc}").format(acc = accuracy_score(pred, labels_test) )
